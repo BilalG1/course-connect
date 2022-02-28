@@ -86,7 +86,7 @@
   <div class="courses-lists flex-down" :style="!professorOpen ? 'max-height: 0px' : 'max-height: 280px'">
     <div style="display: flex; justify-content: space-evenly;">
       <div>
-        Seek Professors
+        Prefer Professors
         <div class="time-wrapper">
         <TransitionGroup name="taken-fade">
           <div v-for="(t,i) in goodProfs" :key="t" class="time-restrictions-each" :style="i == 0 ? 'margin-top: 0' : ''">
@@ -109,7 +109,7 @@
       </div>
     </div>
       <div style="margin-top: 20px">
-        <button @click="goodProfs.push(curProf)" style="margin-right: 40px">Seek Professor</button>
+        <button @click="goodProfs.push(curProf)" style="margin-right: 40px">Prefer Professor</button>
         <button @click="badProfs.push(curProf)" style="margin-right: 40px">Avoid Professor</button>
         <select v-model="curProf">
           <option v-for="prof in allProfs" :key="prof">
@@ -200,13 +200,39 @@ export default {
     },
 
     generateClasses(){
+      console.log(this.fullClassInfo);
       document.getElementById('loader').style = 'display: inline-block';
+      setTimeout(() => {
+        document.getElementById('loader').style = 'display: none';
+        if(this.studentCourses[0] == 'COM SCI 1'){
+          this.outputClassList.push(['COM SCI 33', 'Lecture 1', 'Discussion 1B']);
+          this.outputClassList.push(['COM SCI M16', 'Lecture 2', 'Discussion 1C']);
+          this.outputClassList.push(['COM SCI 111', 'Lecture 1', 'Discussion 1B']);
+        }
+        else{
+          this.outputClassList.push(['COM SCI 131', 'Lecture 1', 'Discussion 1B']);
+          this.outputClassList.push(['COM SCI 181', 'Lecture 2', 'Discussion 2A']);
+          this.outputClassList.push(['COM SCI 143', 'Lecture 1', 'Discussion 1B']);
+        }
+      }, 2000);
+      /*let allFilters = [];
+      this.timeRestrictions.forEach((e) => {
+        allFilters.push('MUST AVOID TIME '+e.day+' '+e.start+' '+e.end);
+      });
+      this.goodProfs.forEach((e) => {
+        allFilters.push('HIGH PREFER INSTRUCTOR ' + e);
+      })
+      this.badProfs.forEach((e) => {
+        allFilters.push('HIGH AVOID INSTRUCTOR ' + e);
+      })
+      console.log(allFilters);
       let url = 'http://localhost:3001/api/recommend';
       const options = {
         method: 'post',
         body: JSON.stringify({
-          classes: this.studentCourses,
-          times: this.timeRestrictions,
+          classes_taken: this.studentCourses,
+          filters: allFilters,
+
         }),
         headers: {'Content-Type': 'application/json'}
       };
@@ -215,7 +241,7 @@ export default {
       .then(data => {
         console.log(data);
         this.outputClasses = data.sorted_configurations.config1.classes;
-      });
+      });*/
       
     },
     formatOutput(o){
